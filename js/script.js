@@ -1,0 +1,217 @@
+// 1 - Aggiungere i colori ad ogni categoria: blue per gli animali, orange per i vegetali e viola per gli utenti. Prendete i colori da un altro array.
+// 2 - Stampare poi tutte le icone utilizzando il template literal.
+// 3 - Stampare quindi nella select tutti i tipi che avete in precedenza selezionato (animal, vegetable, user)
+// 4 - Filtrare i risultati in base alla categoria (ricordate di svuotare il container).
+// Utilizzate forEach, map e filter e cercate di strutturare tutto con le funzioni.
+
+$(document).ready(() => {
+
+  const icons = [
+    {
+      name: 'cat',
+      display: 'cat',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'crow',
+      display: 'crow',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'dog',
+      display: 'dog',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'dove',
+      display: 'dove',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'dragon',
+      display: 'dragon',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'horse',
+      display: 'horse',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'hippo',
+      display: 'hippo',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'fish',
+      display: 'fish',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'animal'
+    },
+    {
+      name: 'carrot',
+      display: 'carrot',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'vegetable'
+    },
+    {
+      name: 'apple-alt',
+      display: 'apple',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'vegetable'
+    },
+    {
+      name: 'lemon',
+      display: 'lemon',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'vegetable'
+    },
+    {
+      name: 'pepper-hot',
+      display: 'pepper-hot',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'vegetable'
+    },
+    {
+      name: 'user-astronaut',
+      display: 'astronaut',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'user'
+    },
+    {
+      name: 'user-graduate',
+      display: 'graduate',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'user'
+    },
+    {
+      name: 'user-ninja',
+      display: 'ninja',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'user'
+    },
+    {
+      name: 'user-secret',
+      display: 'secret agent',
+      family: 'fas',
+      prefix: 'fa-',
+      type: 'user'
+    }
+  ];
+
+  const inconColors = ['rgb(5, 50, 128)', '#da9908', '#d01270'];
+
+  // Trovo i differenti types per associargli il colore
+
+  const iconType = genIconType(icons);
+
+  // Utilizzo l'array appena creato come indice per associare ad ogni type dell'array principale il colore
+
+  const coloredIcons = addColor(icons, iconType, inconColors);
+  console.log('Array completo di colori', coloredIcons);
+
+  displayIcons(coloredIcons);
+
+  // Creo le categorie nella select in base al tipo di icona, sfruttando l'array creato in precedenza
+  const select = $('#filter_opt');
+
+  iconType.forEach(element => {
+    select.append(
+      `
+      <option value="${element}">${element.toUpperCase()}</option>
+      `
+    );
+  });
+
+  // Creo filtro icone in base alla categoria selezionata e lo stampo
+  select.change(function(){
+
+    //Pulisco HTML
+    $('.container').html('');
+
+    //Assegno value in base alla scelta dell'option dell'utente
+    const optSelected = $(this).val();
+
+    // Creo array filtrato in base al type degli oggetti
+    const filterIcons = coloredIcons.filter(element => element.type == optSelected);
+
+    if (filterIcons.length == 0) {
+      displayIcons(coloredIcons);
+    } else {
+      displayIcons(filterIcons);
+    }
+
+  });
+
+});
+
+// ***************Funzioni***************
+
+// Estrapolare types
+function genIconType(arr) {
+  const resArr = [];
+  arr.forEach(element => {
+
+    if (!resArr.includes(element.type)) {
+      resArr.push(element.type);
+    }
+  });
+
+  return resArr;
+};
+
+// Associare colore ad ogni type
+function addColor(gen, filArr, col) {
+
+  const colArr = gen.map(element => {
+    const typeIndex = filArr.indexOf(element.type);
+    return {
+      ...element,
+      color : col[typeIndex]
+    };
+  });
+
+  return colArr;
+};
+
+// Visualizzare icons su HTML
+function displayIcons(arr) {
+
+  arr.forEach(element => {
+
+    const {name, display, family, prefix, color} = element;
+
+    $('.container').append(
+      `
+      <div class="icon_box">
+      <i class="${family} ${prefix}${name}" style="color:${color}"></i>
+      <p>${display}</p>
+      </div>
+      `
+    );
+
+  });
+
+};
